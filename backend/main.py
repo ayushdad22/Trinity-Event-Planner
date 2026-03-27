@@ -10,6 +10,7 @@ db = SQLAlchemy(app)
 # Event model
 class Event(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    picture = db.Column(db.String(120), nullable=True)
     title = db.Column(db.String(120), nullable=False)
     category = db.Column(db.String(50), nullable=False)
     society = db.Column(db.String(120), nullable=True)
@@ -25,6 +26,7 @@ class Event(db.Model):
     def to_dict(self):
         return {
             "id": self.id,
+            "picture" : self.picture,
             "title": self.title,
             "category": self.category,
             "society": self.society,
