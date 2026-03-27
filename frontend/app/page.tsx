@@ -38,7 +38,7 @@ export default function EventsMapPage() {
   useEffect(() => {
     const loadEvents = async () => {
       try {
-        const res = await fetch("http://127.0.0.1:5000/events")
+        const res = await fetch("http://localhost:5000/events")
         const data = await res.json()
         setAllEvents(data)
       } catch (err) {
