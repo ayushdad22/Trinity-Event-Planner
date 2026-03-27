@@ -11,7 +11,8 @@ interface EventCardProps {
 }
 
 export function EventCard({ event, onClose }: EventCardProps) {
-  const categoryColor = categoryColors[event.category] || "#607D8B"
+  const categoryColor = categoryColors[event.category] || "#1A3A6E"
+  const initial = event.organizer.charAt(0).toUpperCase()
 
   return (
     <div className="absolute bottom-4 left-4 right-4 z-[1000] md:left-auto md:right-4 md:w-96">
@@ -40,15 +41,13 @@ export function EventCard({ event, onClose }: EventCardProps) {
         </div>
 
         <div className="p-4">
-          {/* Organizer info */}
+          {/* Organizer info with rounded square letter logo */}
           <div className="mb-3 flex items-center gap-3">
-            <div className="relative h-10 w-10 overflow-hidden rounded-lg bg-secondary">
-              <Image
-                src={event.logo}
-                alt={event.organizer}
-                fill
-                className="object-cover"
-              />
+            <div 
+              className="flex h-10 w-10 items-center justify-center rounded-lg text-lg font-bold text-white"
+              style={{ backgroundColor: categoryColor }}
+            >
+              {initial}
             </div>
             <div>
               <p className="text-xs text-muted-foreground">Hosted by</p>

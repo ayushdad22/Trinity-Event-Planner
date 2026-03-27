@@ -5,7 +5,9 @@ import dynamic from "next/dynamic"
 import { EventCard } from "@/components/event-card"
 import { EventsList } from "@/components/events-list"
 import { MapHeader } from "@/components/map-header"
-
+import { CreateEventFab } from "@/components/create-event-fab"
+import { CreateEventModal } from "@/components/create-event-modal"
+import { Event } from "@/lib/events-data"
 // Dynamically import the map component to avoid SSR issues with Leaflet
 const EventMap = dynamic(
   () => import("@/components/event-map").then((mod) => mod.EventMap),
@@ -24,6 +26,15 @@ export default function EventsMapPage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("All")
   const [viewMode, setViewMode] = useState<"map" | "list">("map")
+  
+  // Simulated society sign-in state (in a real app, this would come from auth)
+  const [isSignedIntoSociety] = useState(true)
+  const [currentSociety] = useState("Trinity Ents")
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
+
+  const handleCreateEvent = () => {
+    setIsCreateModalOpen(true)
+  }
 
 
   const [allEvents, setAllEvents] = useState<Event[]>([])
@@ -102,6 +113,16 @@ export default function EventsMapPage() {
           onClose={() => setSelectedEvent(null)}
         />
       )}
+
+      {isSignedIntoSociety && (
+        <CreateEventFab onClick={handleCreateEvent} />
+      )}
+
+      <CreateEventModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        societyName={currentSociety}
+      />
     </main>
   )
 }
