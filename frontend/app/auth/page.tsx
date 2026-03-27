@@ -1,11 +1,11 @@
 "use client"
 
+import { signIn } from "next-auth/react"  // add this
 import { useMemo, useState } from "react"
 import { useRouter } from "next/navigation"
 
 // TODO: Replace with your backend URL
-const API_BASE = "http://localhost:3000"
-
+const API_BASE = ""
 type AuthResponse = {
   token: string
   user: unknown
@@ -77,38 +77,42 @@ export default function AuthPage() {
   }
 
   const onSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError(null)
+  e.preventDefault()
+  setError(null)
 
-    const validationError = validate()
-    if (validationError) {
-      setError(validationError)
-      return
-    }
-
-    setIsSubmitting(true)
-    try {
-      const payload =
-        mode === "signup"
-          ? { name: fullName.trim(), email: email.trim(), password, accountType }
-          : { email: email.trim(), password }
-
-      const data =
-        mode === "signup"
-          ? await postJson<AuthResponse>("/api/auth/register", payload)
-          : await postJson<AuthResponse>("/api/auth/login", payload)
-
-      localStorage.setItem("hd_token", data.token)
-      localStorage.setItem("hd_current_user", JSON.stringify(data.user))
-
-      router.push("/")
-      router.refresh()
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong.")
-    } finally {
-      setIsSubmitting(false)
-    }
+  const validationError = validate()
+  if (validationError) {
+    setError(validationError)
+    return
   }
+
+  setIsSubmitting(true)
+  try {
+    if (mode === "signup") {
+      await postJson<AuthResponse>("/api/user/register", {
+        name: fullName.trim(),
+        email: email.trim(),
+        password,
+        accountType,
+      })
+    }
+
+    const result = await signIn("credentials", {
+      email: email.trim(),
+      password,
+      redirect: false,
+    })
+
+    if (result?.error) throw new Error("Invalid credentials")
+
+    router.push("/")
+    router.refresh()
+  } catch (err) {
+    setError(err instanceof Error ? err.message : "Something went wrong.")
+  } finally {
+    setIsSubmitting(false)
+  }
+}
 
   const switchMode = (nextMode: "signin" | "signup") => {
     setMode(nextMode)

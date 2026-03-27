@@ -1,14 +1,14 @@
 "use client"
-
 import { useState, useMemo, useEffect } from "react"
 import dynamic from "next/dynamic"
+import { useSession } from "next-auth/react"
 import { EventCard } from "@/components/event-card"
 import { EventsList } from "@/components/events-list"
 import { MapHeader } from "@/components/map-header"
 import { CreateEventFab } from "@/components/create-event-fab"
 import { CreateEventModal } from "@/components/create-event-modal"
 import { Event } from "@/lib/events-data"
-// Dynamically import the map component to avoid SSR issues with Leaflet
+
 const EventMap = dynamic(
   () => import("@/components/event-map").then((mod) => mod.EventMap),
   {
@@ -22,20 +22,15 @@ const EventMap = dynamic(
 )
 
 export default function EventsMapPage() {
+  const { data: session } = useSession()
+  const isSignedIntoSociety = session?.user?.accountType === "society"
+  const currentSociety = session?.user?.name ?? "Society"
+
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("All")
   const [viewMode, setViewMode] = useState<"map" | "list">("map")
-  
-  // Simulated society sign-in state (in a real app, this would come from auth)
-  const [isSignedIntoSociety] = useState(true)
-  const [currentSociety] = useState("Trinity Ents")
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
-
-  const handleCreateEvent = () => {
-    setIsCreateModalOpen(true)
-  }
-
 
   const [allEvents, setAllEvents] = useState<Event[]>([])
   const [loading, setLoading] = useState(true)
@@ -52,7 +47,6 @@ export default function EventsMapPage() {
         setLoading(false)
       }
     }
-
     loadEvents()
   }, [])
 
@@ -62,19 +56,21 @@ export default function EventsMapPage() {
         event.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         event.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
         event.category.toLowerCase().includes(searchQuery.toLowerCase())
-
       const matchesCategory =
         selectedCategory === "All" || event.category === selectedCategory
-
       return matchesSearch && matchesCategory
     })
-  }, [searchQuery, selectedCategory])
+  }, [allEvents, searchQuery, selectedCategory])
 
   const handleEventSelect = (event: Event | null) => {
     setSelectedEvent(event)
     if (event && viewMode === "list") {
       setViewMode("map")
     }
+  }
+
+  const handleCreateEvent = () => {
+    setIsCreateModalOpen(true)
   }
 
   return (
@@ -88,7 +84,6 @@ export default function EventsMapPage() {
         onViewModeChange={setViewMode}
         totalEvents={filteredEvents.length}
       />
-
       {viewMode === "map" ? (
         <div className="h-full pt-[120px]">
           <EventMap
@@ -106,18 +101,15 @@ export default function EventsMapPage() {
           />
         </div>
       )}
-
       {selectedEvent && viewMode === "map" && (
         <EventCard
           event={selectedEvent}
           onClose={() => setSelectedEvent(null)}
         />
       )}
-
       {isSignedIntoSociety && (
         <CreateEventFab onClick={handleCreateEvent} />
       )}
-
       <CreateEventModal
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
