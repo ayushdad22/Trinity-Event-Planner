@@ -1,0 +1,33 @@
+services:
+  app:
+    build: .
+    container_name: events-app
+
+    ports:
+      - "3000:3000"
+      - "5000:5000"
+
+    volumes:
+      - .:/app
+
+    environment:
+      - NODE_ENV=development
+
+    command: >
+      bash -c "
+        # --- Backend setup ---
+        python -m venv .venv &&
+        . .venv/bin/activate &&
+        pip install --upgrade pip &&
+        pip install -r requirements.txt &&
+
+        # --- Frontend setup ---
+        cd frontend &&
+        bun install &&
+        cd .. &&
+
+        # --- Run both सेवices ---
+        python backend/main.py &
+        cd frontend && bun run dev &
+        wait
+      "
