@@ -121,7 +121,14 @@ export default function AuthPage() {
     <main className="min-h-screen bg-background px-4 py-12">
       <div className="mx-auto w-full max-w-md">
         <div className="mb-8 text-center">
-          <div className="text-3xl font-bold tracking-tight text-orange-500">
+          <div className="mb-4 flex justify-center">
+            <img
+              src="/tcd_logo.jpg"
+              alt="Trinity College Dublin"
+              className="h-16 w-auto rounded-md object-contain"
+            />
+          </div>
+          <div className="text-3xl font-bold tracking-tight text-blue-600">
             TCD Events
           </div>
           <h1 className="mt-2 text-xl font-semibold tracking-tight">{title}</h1>
