@@ -6,6 +6,7 @@ import { EventCard } from "@/components/event-card"
 import { EventsList } from "@/components/events-list"
 import { MapHeader } from "@/components/map-header"
 
+import { Event } from "@/lib/events-data" 
 // Dynamically import the map component to avoid SSR issues with Leaflet
 const EventMap = dynamic(
   () => import("@/components/event-map").then((mod) => mod.EventMap),
