@@ -30,24 +30,24 @@ export function MapHeader({
 
   return (
     <div className="absolute left-0 right-0 top-0 z-[1000]">
-      <div className="bg-background/95 backdrop-blur-md">
+      <div className="bg-[#1A3A6E] backdrop-blur-md">
         <div className="px-4 py-3">
           <div className="flex items-center gap-3">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/60" />
               <Input
                 type="text"
                 placeholder="Search events..."
                 value={searchQuery}
                 onChange={(e) => onSearchChange(e.target.value)}
-                className="h-10 border-border bg-input pl-10 text-foreground placeholder:text-muted-foreground"
+                className="h-10 border-white/20 bg-white/10 pl-10 text-white placeholder:text-white/60"
               />
               {searchQuery && (
                 <button
                   onClick={() => onSearchChange("")}
                   className="absolute right-3 top-1/2 -translate-y-1/2"
                 >
-                  <X className="h-4 w-4 text-muted-foreground hover:text-foreground" />
+                  <X className="h-4 w-4 text-white/60 hover:text-white" />
                 </button>
               )}
             </div>
@@ -56,20 +56,20 @@ export function MapHeader({
               size="icon"
               onClick={() => setShowFilters(!showFilters)}
               className={cn(
-                "h-10 w-10 border-border",
-                showFilters && "bg-primary text-primary-foreground"
+                "h-10 w-10 border-white/20 bg-white/10 text-white hover:bg-white/20 hover:text-white",
+                showFilters && "bg-white text-[#1A3A6E]"
               )}
             >
               <SlidersHorizontal className="h-4 w-4" />
             </Button>
-            <div className="flex h-10 overflow-hidden rounded-lg border border-border bg-input">
+            <div className="flex h-10 overflow-hidden rounded-lg border border-white/20 bg-white/10">
               <button
                 onClick={() => onViewModeChange("map")}
                 className={cn(
                   "flex items-center justify-center px-3 transition-colors",
                   viewMode === "map"
-                    ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:text-foreground"
+                    ? "bg-white text-[#1A3A6E]"
+                    : "text-white/60 hover:text-white"
                 )}
               >
                 <Map className="h-4 w-4" />
@@ -79,8 +79,8 @@ export function MapHeader({
                 className={cn(
                   "flex items-center justify-center px-3 transition-colors",
                   viewMode === "list"
-                    ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:text-foreground"
+                    ? "bg-white text-[#1A3A6E]"
+                    : "text-white/60 hover:text-white"
                 )}
               >
                 <List className="h-4 w-4" />
@@ -98,8 +98,8 @@ export function MapHeader({
                     className={cn(
                       "whitespace-nowrap rounded-full px-4 py-1.5 text-sm font-medium transition-colors",
                       selectedCategory === category
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                        ? "bg-white text-[#1A3A6E]"
+                        : "bg-white/20 text-white hover:bg-white/30"
                     )}
                   >
                     {category}
@@ -110,11 +110,11 @@ export function MapHeader({
           )}
         </div>
 
-        <div className="flex items-center justify-between border-t border-border bg-card/50 px-4 py-2">
-          <span className="text-sm text-muted-foreground">
-            <span className="font-semibold text-primary">{totalEvents}</span> events near you
+        <div className="flex items-center justify-between border-t border-white/20 bg-[#152E56] px-4 py-2">
+          <span className="text-sm text-white/80">
+            <span className="font-semibold text-white">{totalEvents}</span> events near you
           </span>
-          <span className="text-xs text-muted-foreground">Dublin, Ireland</span>
+          <span className="text-xs text-white/60">Dublin, Ireland</span>
         </div>
       </div>
     </div>

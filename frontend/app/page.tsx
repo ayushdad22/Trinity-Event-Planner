@@ -6,6 +6,7 @@ import { EventCard } from "@/components/event-card"
 import { EventsList } from "@/components/events-list"
 import { MapHeader } from "@/components/map-header"
 import { CreateEventFab } from "@/components/create-event-fab"
+import { CreateEventModal } from "@/components/create-event-modal"
 
 import { Event } from "@/lib/events-data" 
 // Dynamically import the map component to avoid SSR issues with Leaflet
@@ -30,10 +31,10 @@ export default function EventsMapPage() {
   // Simulated society sign-in state (in a real app, this would come from auth)
   const [isSignedIntoSociety] = useState(true)
   const [currentSociety] = useState("Trinity Ents")
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
 
   const handleCreateEvent = () => {
-    // This would open a create event modal/form
-    alert(`Create new event for ${currentSociety}`)
+    setIsCreateModalOpen(true)
   }
 
 
@@ -117,6 +118,12 @@ export default function EventsMapPage() {
       {isSignedIntoSociety && (
         <CreateEventFab onClick={handleCreateEvent} />
       )}
+
+      <CreateEventModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        societyName={currentSociety}
+      />
     </main>
   )
 }
