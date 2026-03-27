@@ -1,8 +1,7 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import dynamic from "next/dynamic"
-import { events as allEvents, Event } from "@/lib/events-data"
 import { EventCard } from "@/components/event-card"
 import { EventsList } from "@/components/events-list"
 import { MapHeader } from "@/components/map-header"
@@ -25,6 +24,26 @@ export default function EventsMapPage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("All")
   const [viewMode, setViewMode] = useState<"map" | "list">("map")
+
+
+  const [allEvents, setAllEvents] = useState<Event[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const loadEvents = async () => {
+      try {
+        const res = await fetch("http://127.0.0.1:5000/events")
+        const data = await res.json()
+        setAllEvents(data)
+      } catch (err) {
+        console.error("Failed to load events:", err)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadEvents()
+  }, [])
 
   const filteredEvents = useMemo(() => {
     return allEvents.filter((event) => {

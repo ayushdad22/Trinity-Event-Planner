@@ -10,34 +10,36 @@ db = SQLAlchemy(app)
 # Event model
 class Event(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    image = db.Column(db.String(120), nullable=True)
     title = db.Column(db.String(120), nullable=False)
+    location = db.Column(db.String(120), nullable=False)
     category = db.Column(db.String(50), nullable=False)
-    society = db.Column(db.String(120), nullable=True)
+    organizer = db.Column(db.String(120), nullable=True)
     date = db.Column(db.String(20), nullable=False)
     time = db.Column(db.String(20), nullable=False)
-    venue = db.Column(db.String(150), nullable=False)
-    address = db.Column(db.String(200), nullable=False)
+    attendees = db.Column(db.Integer, nullable=True)
+    image = db.Column(db.String(255), nullable=True)
     description = db.Column(db.String(255), nullable=True)
     link = db.Column(db.String(255), nullable=True)
     lat = db.Column(db.Float, nullable=False)
     lng = db.Column(db.Float, nullable=False)
+    logo = db.Column(db.String(255), nullable=True)
 
     def to_dict(self):
         return {
             "id": self.id,
-            "image" : self.image,
             "title": self.title,
+            "location": self.location,
             "category": self.category,
-            "society": self.society,
+            "organizer": self.organizer,
             "date": self.date,
             "time": self.time,
-            "venue": self.venue,
-            "address": self.address,
-            "desc": self.description,
+            "attendees": self.attendees,
+            "image": self.image,
+            "description": self.description,
             "link": self.link,
             "lat": self.lat,
-            "lng": self.lng
+            "lng": self.lng,
+            "logo": self.logo
         }
 
 # Create DB
@@ -63,16 +65,18 @@ def create_event():
 
     event = Event(
         title=data.get('title'),
+        location=data.get('location'),
         category=data.get('category'),
-        society=data.get('society'),
+        organizer=data.get('organizer'),
         date=data.get('date'),
         time=data.get('time'),
-        venue=data.get('venue'),
-        address=data.get('address'),
-        description=data.get('desc'),
+        attendees=data.get('attendees'),
+        image=data.get('image'),
+        description=data.get('description'),
         link=data.get('link'),
         lat=data.get('lat'),
-        lng=data.get('lng')
+        lng=data.get('lng'),
+        logo=data.get('logo')
     )
 
     db.session.add(event)
