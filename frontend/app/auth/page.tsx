@@ -127,7 +127,7 @@ export default function AuthPage() {
         <div className="mb-8 text-center">
           <div className="mb-4 flex justify-center">
             <img
-              src="/tcd_logo.jpg"
+              src="/images/tcd_logo.jpg"
               alt="Trinity College Dublin"
               className="h-16 w-auto rounded-md object-contain"
             />
