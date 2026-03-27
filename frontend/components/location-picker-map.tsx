@@ -1,5 +1,4 @@
 "use client"
-
 import { useEffect, useRef } from "react"
 import "leaflet/dist/leaflet.css"
 
@@ -17,10 +16,25 @@ export function LocationPickerMap({ lat, lng, onPick }: Props) {
   useEffect(() => {
     if (!mapRef.current || mapInstanceRef.current) return
 
+    let aborted = false
+
     const initMap = async () => {
       const L = await import("leaflet")
+      if (aborted || !mapRef.current) return
 
-      const map = L.map(mapRef.current!, {
+      // Fix broken default marker icons
+      delete (L.Icon.Default.prototype as any)._getIconUrl
+      L.Icon.Default.mergeOptions({
+        iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+        iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
+        shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+      })
+
+      if ((mapRef.current as any)._leaflet_id) {
+        (mapRef.current as any)._leaflet_id = null
+      }
+
+      const map = L.map(mapRef.current, {
         center: [53.3438, -6.2546],
         zoom: 15,
       })
@@ -32,7 +46,6 @@ export function LocationPickerMap({ lat, lng, onPick }: Props) {
       map.on("click", (e: any) => {
         const { lat, lng } = e.latlng
         onPick(lat, lng)
-
         if (markerRef.current) {
           markerRef.current.setLatLng([lat, lng])
         } else {
@@ -46,9 +59,13 @@ export function LocationPickerMap({ lat, lng, onPick }: Props) {
     initMap()
 
     return () => {
+      aborted = true
       if (mapInstanceRef.current) {
         mapInstanceRef.current.remove()
         mapInstanceRef.current = null
+      }
+      if (mapRef.current) {
+        (mapRef.current as any)._leaflet_id = null
       }
     }
   }, [])
@@ -58,7 +75,6 @@ export function LocationPickerMap({ lat, lng, onPick }: Props) {
 
     const updateMarker = async () => {
       const L = await import("leaflet")
-
       if (markerRef.current) {
         markerRef.current.setLatLng([lat, lng])
       } else {
