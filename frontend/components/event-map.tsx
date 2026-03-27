@@ -20,10 +20,10 @@ export function EventMap({ events, onEventSelect, selectedEvent }: EventMapProps
   useEffect(() => {
     if (!mapRef.current || mapInstanceRef.current) return
 
-    // Initialize map
+    // Initialize map centered on Dublin / Trinity College
     const map = L.map(mapRef.current, {
-      center: [40.7128, -74.006],
-      zoom: 12,
+      center: [53.3438, -6.2546],
+      zoom: 15,
       zoomControl: false,
     })
 
@@ -60,8 +60,9 @@ export function EventMap({ events, onEventSelect, selectedEvent }: EventMapProps
     // Add markers for each event
     events.forEach((event) => {
       const isSelected = selectedEvent?.id === event.id
-      const markerSize = isSelected ? 60 : 52
-      const categoryColor = categoryColors[event.category] || "#607D8B"
+      const markerSize = isSelected ? 56 : 48
+      const categoryColor = categoryColors[event.category] || "#1A3A6E"
+      const initial = event.organizer.charAt(0).toUpperCase()
 
       const icon = L.divIcon({
         className: "custom-marker",
@@ -70,40 +71,24 @@ export function EventMap({ events, onEventSelect, selectedEvent }: EventMapProps
             <div class="marker-container" style="
               width: ${markerSize}px;
               height: ${markerSize}px;
-              background: white;
-              border-radius: 50%;
+              background: ${categoryColor};
+              border-radius: 12px;
               display: flex;
               align-items: center;
               justify-content: center;
-              box-shadow: 0 4px 20px rgba(0,0,0,0.25), 0 0 0 3px ${categoryColor};
+              box-shadow: 0 4px 20px rgba(0,0,0,0.25), 0 0 0 3px white;
               cursor: pointer;
               transition: all 0.2s ease;
               overflow: hidden;
-              ${isSelected ? `transform: scale(1.15); box-shadow: 0 8px 30px rgba(0,0,0,0.35), 0 0 0 4px ${categoryColor};` : ""}
+              ${isSelected ? `transform: scale(1.15); box-shadow: 0 8px 30px rgba(0,0,0,0.35), 0 0 0 4px white;` : ""}
             ">
-              <img 
-                src="${event.logo}" 
-                alt="${event.organizer}"
-                style="
-                  width: ${markerSize - 12}px;
-                  height: ${markerSize - 12}px;
-                  border-radius: 50%;
-                  object-fit: cover;
-                "
-                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
-              />
-              <div style="
-                display: none;
-                width: ${markerSize - 12}px;
-                height: ${markerSize - 12}px;
-                border-radius: 50%;
-                background: ${categoryColor};
-                align-items: center;
-                justify-content: center;
+              <span style="
                 color: white;
                 font-weight: 700;
-                font-size: 16px;
-              ">${event.organizer.charAt(0)}</div>
+                font-size: ${markerSize * 0.45}px;
+                font-family: system-ui, -apple-system, sans-serif;
+                text-transform: uppercase;
+              ">${initial}</span>
             </div>
             <div class="marker-pulse" style="
               position: absolute;
@@ -113,7 +98,7 @@ export function EventMap({ events, onEventSelect, selectedEvent }: EventMapProps
               width: ${markerSize + 20}px;
               height: ${markerSize + 20}px;
               background: ${categoryColor};
-              border-radius: 50%;
+              border-radius: 16px;
               opacity: 0.2;
               z-index: -1;
               ${isSelected ? "animation: pulse 1.5s ease-out infinite;" : ""}
@@ -147,12 +132,18 @@ export function EventMap({ events, onEventSelect, selectedEvent }: EventMapProps
           font-family: system-ui, -apple-system, sans-serif;
         ">
           <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
-            <img 
-              src="${event.logo}" 
-              alt="${event.organizer}"
-              style="width: 32px; height: 32px; border-radius: 8px; object-fit: cover;"
-              onerror="this.style.display='none'"
-            />
+            <div style="
+              width: 36px;
+              height: 36px;
+              border-radius: 8px;
+              background: ${categoryColor};
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              color: white;
+              font-weight: 700;
+              font-size: 16px;
+            ">${initial}</div>
             <div>
               <div style="font-weight: 600; font-size: 14px; color: #1a1a2e;">${event.title}</div>
               <div style="font-size: 11px; color: ${categoryColor}; font-weight: 500;">${event.organizer}</div>

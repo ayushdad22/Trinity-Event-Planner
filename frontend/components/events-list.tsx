@@ -16,7 +16,8 @@ export function EventsList({ events, selectedEvent, onEventSelect }: EventsListP
     <div className="h-full overflow-y-auto bg-background">
       <div className="space-y-3 p-4">
         {events.map((event) => {
-          const categoryColor = categoryColors[event.category] || "#607D8B"
+          const categoryColor = categoryColors[event.category] || "#1A3A6E"
+          const initial = event.organizer.charAt(0).toUpperCase()
           
           return (
             <button
@@ -32,14 +33,12 @@ export function EventsList({ events, selectedEvent, onEventSelect }: EventsListP
               }}
             >
               <div className="flex gap-3 p-3">
-                {/* Logo */}
-                <div className="relative h-14 w-14 flex-shrink-0 overflow-hidden rounded-xl bg-secondary">
-                  <Image
-                    src={event.logo}
-                    alt={event.organizer}
-                    fill
-                    className="object-cover p-1"
-                  />
+                {/* Society Letter Logo */}
+                <div 
+                  className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-xl text-xl font-bold text-white"
+                  style={{ backgroundColor: categoryColor }}
+                >
+                  {initial}
                 </div>
                 
                 {/* Event thumbnail */}

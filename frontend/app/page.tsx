@@ -5,6 +5,7 @@ import dynamic from "next/dynamic"
 import { EventCard } from "@/components/event-card"
 import { EventsList } from "@/components/events-list"
 import { MapHeader } from "@/components/map-header"
+import { CreateEventFab } from "@/components/create-event-fab"
 
 import { Event } from "@/lib/events-data" 
 // Dynamically import the map component to avoid SSR issues with Leaflet
@@ -25,6 +26,15 @@ export default function EventsMapPage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("All")
   const [viewMode, setViewMode] = useState<"map" | "list">("map")
+  
+  // Simulated society sign-in state (in a real app, this would come from auth)
+  const [isSignedIntoSociety] = useState(true)
+  const [currentSociety] = useState("Trinity Ents")
+
+  const handleCreateEvent = () => {
+    // This would open a create event modal/form
+    alert(`Create new event for ${currentSociety}`)
+  }
 
 
   const [allEvents, setAllEvents] = useState<Event[]>([])
@@ -102,6 +112,10 @@ export default function EventsMapPage() {
           event={selectedEvent}
           onClose={() => setSelectedEvent(null)}
         />
+      )}
+
+      {isSignedIntoSociety && (
+        <CreateEventFab onClick={handleCreateEvent} />
       )}
     </main>
   )

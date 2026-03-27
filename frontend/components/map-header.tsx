@@ -114,7 +114,7 @@ export function MapHeader({
           <span className="text-sm text-muted-foreground">
             <span className="font-semibold text-primary">{totalEvents}</span> events near you
           </span>
-          <span className="text-xs text-muted-foreground">New York City</span>
+          <span className="text-xs text-muted-foreground">Dublin, Ireland</span>
         </div>
       </div>
     </div>
