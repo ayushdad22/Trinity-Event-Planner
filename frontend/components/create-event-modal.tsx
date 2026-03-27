@@ -5,6 +5,7 @@ import { X, Upload, Calendar, Clock, MapPin } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { categories } from "@/lib/events-data"
+import { LocationPickerMap } from "./location-picker-map"
 
 interface CreateEventModalProps {
   isOpen: boolean
@@ -14,14 +15,16 @@ interface CreateEventModalProps {
 
 export function CreateEventModal({ isOpen, onClose, societyName }: CreateEventModalProps) {
   const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    location: "",
-    date: "",
-    time: "",
-    category: "Music",
-    image: null as File | null,
-  })
+  title: "",
+  description: "",
+  location: "",
+  date: "",
+  time: "",
+  category: "Music",
+  image: null as File | null,
+  lat: null as number | null,
+  lng: null as number | null,
+})
   const [imagePreview, setImagePreview] = useState<string | null>(null)
 
   if (!isOpen) return null
@@ -38,11 +41,68 @@ export function CreateEventModal({ isOpen, onClose, societyName }: CreateEventMo
     }
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Handle form submission here
-    console.log("Event created:", formData)
-    onClose()
+
+    try {
+      const payload = {
+        title: formData.title,
+        location: formData.location,
+        category: formData.category,
+
+        organizer: societyName,
+        date: formData.date,
+        time: formData.time,
+
+        attendees: 0,
+        image: imagePreview, // base64 for now
+
+        description: formData.description,
+        link: "",
+        logo: "",
+
+        lat: formData.lat,
+        lng: formData.lng,
+      }
+
+      const res = await fetch("http://localhost:5000/events", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      })
+
+      if (!res.ok) {
+        const errorText = await res.text()
+        throw new Error(errorText || "Failed to create event")
+      }
+
+      const createdEvent = await res.json()
+      console.log("Event created:", createdEvent)
+
+      // optional UX improvement: close modal
+      onClose()
+
+      // optional: reset form
+      setFormData({
+        title: "",
+        description: "",
+        location: "",
+        date: "",
+        time: "",
+        category: "Music",
+        image: null,
+        lat: null,
+        lng: null,
+      })
+      setImagePreview(null)
+
+      // optional: refresh page/data
+      window.location.reload()
+    } catch (err) {
+      console.error("Create event failed:", err)
+    }
   }
 
   const filteredCategories = categories.filter(c => c !== "All")
@@ -213,6 +273,18 @@ export function CreateEventModal({ isOpen, onClose, societyName }: CreateEventMo
               </div>
             </div>
           </div>
+
+          <LocationPickerMap
+            lat={formData.lat}
+            lng={formData.lng}
+            onPick={(lat, lng) =>
+              setFormData((prev) => ({
+                ...prev,
+                lat,
+                lng,
+              }))
+            }
+          />
 
           {/* Submit Button */}
           <div className="pt-2">
